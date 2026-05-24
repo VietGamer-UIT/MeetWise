@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/test_api.py — Integration tests cho API endpoints (v2)
 
 v2: Bổ sung tests cho:
@@ -13,7 +13,7 @@ from httpx import AsyncClient, ASGITransport
 from unittest.mock import AsyncMock, patch, MagicMock
 
 from main import app
-from solver.parser import parse
+from ai_engine.solver.parser import parse
 
 
 # ─────────────────────────────────────────────

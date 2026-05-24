@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/test_solver.py — Unit tests cho Parser và Z3 Engine
 
 Bao gồm test case bắt buộc:
@@ -8,7 +8,7 @@ Bao gồm test case bắt buộc:
 """
 
 import pytest
-from solver.parser import (
+from ai_engine.solver.parser import (
     parse,
     get_atoms,
     AndNode,
@@ -16,7 +16,7 @@ from solver.parser import (
     NotNode,
     AtomNode,
 )
-from solver.z3_engine import z3_engine
+from ai_engine.solver.z3_engine import z3_engine
 
 
 # ─────────────────────────────────────────────

@@ -1,4 +1,4 @@
-"""
+﻿"""
 agent/state.py — Immutable TypedDict State cho LangGraph (v2)
 
 Quy tắc:
@@ -10,8 +10,8 @@ Quy tắc:
 
 from typing import Any, Dict, List, Optional, TypedDict
 
-from solver.parser import ConditionNode
-from solver.z3_engine import VerifyResult
+from ai_engine.solver.parser import ConditionNode
+from ai_engine.solver.z3_engine import VerifyResult
 
 
 class MeetingState(TypedDict, total=False):

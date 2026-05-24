@@ -1,4 +1,4 @@
-"""
+﻿"""
 solver/z3_engine.py — Z3 SMT Solver Engine (v4 Thread-Safe + Timeout)
 
 Thread-Safety Architecture:
@@ -31,7 +31,7 @@ from typing import Any, Dict, List, Optional
 
 import z3
 
-from solver.parser import (
+from ai_engine.solver.parser import (
     ConditionNode,
     AndNode,
     OrNode,

@@ -1,4 +1,4 @@
-"""
+﻿"""
 agent/graph.py — LangGraph StateGraph Definition
 
 Flow: START → parse_input → fetch_facts → verify_logic → decide_action → END
@@ -11,8 +11,8 @@ Flow: START → parse_input → fetch_facts → verify_logic → decide_action �
 
 from langgraph.graph import StateGraph, END
 
-from agent.state import MeetingState
-from agent.nodes import (
+from ai_engine.agent.state import MeetingState
+from ai_engine.agent.nodes import (
     parse_input_node,
     fetch_facts_node,
     verify_logic_node,

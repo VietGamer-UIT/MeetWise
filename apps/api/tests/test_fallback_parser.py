@@ -1,4 +1,4 @@
-"""
+﻿"""
 tests/test_fallback_parser.py — Tests cho Deterministic Fallback Parser
 
 Bao gồm:
@@ -28,7 +28,7 @@ class TestFallbackParseRule:
         Input: "Chỉ họp nếu Slide cập nhật hoặc Sheet chốt số. Bắt buộc Manager rảnh"
         Expected: formula chứa Slide_Done OR Sheet_Done AND Manager_Free
         """
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule(
             "Chỉ họp nếu Slide cập nhật hoặc Sheet chốt số. Bắt buộc Manager rảnh"
@@ -47,7 +47,7 @@ class TestFallbackParseRule:
             f"Manager_Free phải có trong result. Formula: {formula}, vars: {variables}"
 
         # Formula phải parse được bằng parser.py
-        from solver.parser import parse
+        from ai_engine.solver.parser import parse
         ast = parse(formula)
         assert ast is not None, f"Formula '{formula}' không parse được"
 
@@ -58,7 +58,7 @@ class TestFallbackParseRule:
 
     def test_never_raises_exception(self):
         """fallback_parse_rule KHÔNG BAO GIỜ raise exception."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         # Các input cực kỳ xấu
         bad_inputs = [
@@ -79,8 +79,8 @@ class TestFallbackParseRule:
 
     def test_always_returns_valid_formula(self):
         """logic_formula luôn parseable bằng recursive descent parser."""
-        from solver.fallback_parser import fallback_parse_rule
-        from solver.parser import parse
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.parser import parse
 
         test_inputs = [
             "Slide_Done and Manager_Free",
@@ -101,29 +101,29 @@ class TestFallbackParseRule:
 
     def test_slide_keyword_mapping(self):
         """'slide' → Slide_Done."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("slide cập nhật")
         assert "Slide_Done" in result["variables"] or "Slide_Done" in result["logic_formula"]
 
     def test_sheet_keyword_mapping(self):
         """'sheet chốt số' → Sheet_Done."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("sheet chốt số")
         assert "Sheet_Done" in result["variables"] or "Sheet_Done" in result["logic_formula"]
 
     def test_manager_keyword_mapping(self):
         """'manager rảnh' → Manager_Free."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("manager rảnh")
         assert "Manager_Free" in result["variables"] or "Manager_Free" in result["logic_formula"]
 
     def test_vn_or_keyword(self):
         """'hoặc' → OR operator."""
-        from solver.fallback_parser import fallback_parse_rule
-        from solver.parser import parse, OrNode
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.parser import parse, OrNode
 
         result = fallback_parse_rule("slide hoặc sheet")
         formula = result["logic_formula"]
@@ -132,8 +132,8 @@ class TestFallbackParseRule:
 
     def test_vn_and_keyword(self):
         """'và' → AND operator."""
-        from solver.fallback_parser import fallback_parse_rule
-        from solver.parser import parse, AndNode
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.parser import parse, AndNode
 
         result = fallback_parse_rule("slide và manager rảnh")
         formula = result["logic_formula"]
@@ -142,7 +142,7 @@ class TestFallbackParseRule:
 
     def test_bat_buoc_keyword(self):
         """'bắt buộc' → AND operator."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("bắt buộc manager rảnh")
         formula = result["logic_formula"]
@@ -150,7 +150,7 @@ class TestFallbackParseRule:
 
     def test_empty_input_safe_default(self):
         """Input rỗng → safe default 'Manager_Free'."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("")
         assert result["logic_formula"] == "Manager_Free"
@@ -158,18 +158,18 @@ class TestFallbackParseRule:
 
     def test_unknown_input_safe_default(self):
         """Input không có keywords hợp lệ → safe default."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("xyz abc def")
         # Phải có một formula hợp lệ
         assert result["logic_formula"]
-        from solver.parser import parse
+        from ai_engine.solver.parser import parse
         ast = parse(result["logic_formula"])
         assert ast is not None
 
     def test_returns_required_fields(self):
         """Result phải có đủ 5 fields theo contract."""
-        from solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
 
         result = fallback_parse_rule("slide và manager rảnh")
 
@@ -185,8 +185,8 @@ class TestFallbackParseRule:
 
     def test_complex_vn_rule(self):
         """Complex Vietnamese rule với nhiều điều kiện."""
-        from solver.fallback_parser import fallback_parse_rule
-        from solver.parser import parse
+        from ai_engine.solver.fallback_parser import fallback_parse_rule
+        from ai_engine.solver.parser import parse
 
         result = fallback_parse_rule(
             "Slide hoặc Sheet phải xong. Manager rảnh và Attendees xác nhận"
@@ -211,7 +211,7 @@ class TestFallbackToLogicExpression:
 
     def test_returns_string(self):
         """Luôn trả về string."""
-        from solver.fallback_parser import fallback_to_logic_expression
+        from ai_engine.solver.fallback_parser import fallback_to_logic_expression
 
         result = fallback_to_logic_expression("slide và manager rảnh")
         assert isinstance(result, str)
@@ -219,8 +219,8 @@ class TestFallbackToLogicExpression:
 
     def test_parseable(self):
         """Result phải parseable."""
-        from solver.fallback_parser import fallback_to_logic_expression
-        from solver.parser import parse
+        from ai_engine.solver.fallback_parser import fallback_to_logic_expression
+        from ai_engine.solver.parser import parse
 
         formula = fallback_to_logic_expression("slide hoặc sheet và manager")
         ast = parse(formula)
@@ -228,7 +228,7 @@ class TestFallbackToLogicExpression:
 
     def test_never_raises(self):
         """NEVER raises."""
-        from solver.fallback_parser import fallback_to_logic_expression
+        from ai_engine.solver.fallback_parser import fallback_to_logic_expression
 
         try:
             result = fallback_to_logic_expression("!!!! garbage @@@")

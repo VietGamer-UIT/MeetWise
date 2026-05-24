@@ -1,4 +1,4 @@
-"""
+﻿"""
 solver/fallback_parser.py — Deterministic Rule-Based Fallback Parser
 
 Khi LLM không khả dụng (quota, timeout, 429...), hệ thống
@@ -456,7 +456,7 @@ def _validate_and_fix(
         (is_valid, formula_string)
     """
     try:
-        from solver.parser import parse as parse_ast
+        from ai_engine.solver.parser import parse as parse_ast
         parse_ast(formula)
         return True, formula
     except SyntaxError:
@@ -466,7 +466,7 @@ def _validate_and_fix(
     try:
         if var_map:
             simple = " and ".join(sorted(var_map.keys()))
-            from solver.parser import parse as parse_ast
+            from ai_engine.solver.parser import parse as parse_ast
             parse_ast(simple)
             logger.info(
                 f"Fallback parser: dùng simple AND join: '{simple}'",

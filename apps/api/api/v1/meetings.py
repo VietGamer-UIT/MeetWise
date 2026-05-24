@@ -1,4 +1,4 @@
-"""
+﻿"""
 api/v1/meetings.py — POST /v1/meetings/evaluate Router
 
 Pipeline xử lý (theo thứ tự):
@@ -33,8 +33,8 @@ import asyncio
 from fastapi import APIRouter, Header, Request, status
 from fastapi.responses import JSONResponse
 
-from agent.graph import get_compiled_graph  # noqa: F401 (ensure graph compile)
-from agent.state import MeetingState
+from ai_engine.agent.graph import get_compiled_graph  # noqa: F401 (ensure graph compile)
+from ai_engine.agent.state import MeetingState
 from core.config import settings
 from core.logging import get_logger, log_request
 from core.metrics import metrics

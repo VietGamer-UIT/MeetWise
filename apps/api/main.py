@@ -1,4 +1,4 @@
-"""
+﻿"""
 main.py — FastAPI Application Entry Point
 
 MeetWise Backend: Meeting Readiness Evaluation Engine
@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Warm-up: compile LangGraph trước để tránh cold start latency
     try:
-        from agent.graph import get_compiled_graph
+        from ai_engine.agent.graph import get_compiled_graph
         get_compiled_graph()
         logger.info(
             "✅ LangGraph compiled thành công",

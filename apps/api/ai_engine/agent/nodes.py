@@ -1,4 +1,4 @@
-"""
+﻿"""
 agent/nodes.py — LangGraph Node Functions (v4 — Production-Hardened)
 
                     ╔══════════════════════════════════╗
@@ -29,15 +29,15 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ValidationError
 
-from agent.state import MeetingState
-from agent.tools import fetch_facts_parallel
+from ai_engine.agent.state import MeetingState
+from ai_engine.agent.tools import fetch_facts_parallel
 from core.config import settings
 from core.logging import get_logger, log_node_start, log_node_end
 from core.metrics import metrics
 from schemas.response import ErrorCode, MeetingStatus
-from solver.parser import parse, get_atoms, ConditionNode
-from solver.fallback_parser import fallback_parse_rule, fallback_to_logic_expression
-from solver.z3_engine import z3_engine
+from ai_engine.solver.parser import parse, get_atoms, ConditionNode
+from ai_engine.solver.fallback_parser import fallback_parse_rule, fallback_to_logic_expression
+from ai_engine.solver.z3_engine import z3_engine
 
 logger = get_logger(__name__)
 
