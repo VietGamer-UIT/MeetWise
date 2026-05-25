@@ -1,25 +1,92 @@
+# ============================================================
+# docker-compose.yml — MeetWise Full Stack (API + Web)
+# Tác giả: Đoàn Hoàng Việt (Việt Gamer)
+#
+# Chạy toàn bộ stack:
+#   docker-compose up --build
+#
+# Các services:
+#   - api  → FastAPI Backend  tại http://localhost:8000
+#   - web  → Next.js Frontend tại http://localhost:3000
+#
+# Services giao tiếp nội bộ qua Docker network "meetwise-net"
+# (api có thể gọi bằng http://api:8000 từ trong container web)
+# ============================================================
+
 version: "3.9"
 
 services:
-  backend:
-    build: .
-    container_name: meetwise-backend
+
+  # ─── Backend: FastAPI + LangGraph + Z3 ────────────────────
+  api:
+    build:
+      context: ../../apps/api        # Dockerfile nằm ở apps/api/
+      dockerfile: Dockerfile
+    container_name: meetwise-api
     ports:
-      - "8000:8000"       # local dev: http://localhost:8000
+      - "8000:8000"
     environment:
-      PORT: "8000"        # override Cloud Run default (8080) for local
+      PORT: "8000"
+      APP_ENV: "${APP_ENV:-development}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
       USE_LLM: "${USE_LLM:-false}"
       USE_FIREBASE: "${USE_FIREBASE:-false}"
       USE_GOOGLE_SERVICES: "${USE_GOOGLE_SERVICES:-false}"
-      APP_ENV: "${APP_ENV:-development}"
-      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
-      CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-*}"
+      CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-http://localhost:3000}"
+      # Supabase
+      SUPABASE_URL: "${SUPABASE_URL:-}"
+      SUPABASE_ANON_KEY: "${SUPABASE_ANON_KEY:-}"
+      SUPABASE_SERVICE_ROLE_KEY: "${SUPABASE_SERVICE_ROLE_KEY:-}"
+      SUPABASE_JWT_SECRET: "${SUPABASE_JWT_SECRET:-}"
+      # Email
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      RESEND_FROM_EMAIL: "${RESEND_FROM_EMAIL:-noreply@meetwise.app}"
+      # AI
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
     env_file:
-      - .env
+      - path: ../../.env
+        required: false               # Không bắt buộc — có thể chạy bằng env vars
+    networks:
+      - meetwise-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 20s
+
+  # ─── Frontend: Next.js 14 ─────────────────────────────────
+  web:
+    build:
+      context: ../../apps/web        # Dockerfile nằm ở apps/web/
+      dockerfile: Dockerfile
+      args:
+        # Truyền vào lúc build (NEXT_PUBLIC_* được baked vào bundle)
+        NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL:-http://localhost:8000}"
+        NEXT_PUBLIC_SUPABASE_URL: "${NEXT_PUBLIC_SUPABASE_URL:-}"
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}"
+    container_name: meetwise-web
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: "production"
+      PORT: "3000"
+    networks:
+      - meetwise-net
+    depends_on:
+      api:
+        condition: service_healthy   # Chỉ khởi động Web sau khi API healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+# ─── Network nội bộ ────────────────────────────────────────
+networks:
+  meetwise-net:
+    driver: bridge
+    name: meetwise-network

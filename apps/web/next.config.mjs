@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Bắt buộc cho Dockerfile multi-stage (tối ưu dung lượng)
+  output: "standalone",
+
   // Tắt strict mode để tránh double-render trong dev
   reactStrictMode: false,
 
